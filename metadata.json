@@ -1,0 +1,33 @@
+{
+  "name": "standupcamedy-analytics",
+  "displayName": "@standupcamedy — Live Analytics HQ",
+  "description": "Live growth tracker, trend intelligence, and AI strategy dashboard for @standupcamedy Instagram",
+  "version": "1.0.0",
+  "author": "standupcamedy",
+  "instagram": "@standupcamedy",
+  "url": "https://www.instagram.com/standupcamedy/",
+  "category": "Standup Comedy",
+  "language": "hi-IN, en-IN",
+  "target_audience": "18-28, India",
+  "keywords": [
+    "standup comedy",
+    "instagram analytics",
+    "indian comedy",
+    "creator tools",
+    "growth tracker"
+  ],
+  "deployment": {
+    "platform": "Vercel",
+    "framework": "Vite + React + TypeScript",
+    "auto_deploy": true,
+    "branch": "main"
+  },
+  "features": [
+    "Live follower tracking",
+    "Trend intelligence",
+    "Comedian watch",
+    "Content ideas generator",
+    "AI growth advisor",
+    "Responsive on all devices"
+  ]
+}
