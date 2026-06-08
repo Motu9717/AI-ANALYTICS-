@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@standupcamedy — Analytics HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060a;--surface:#0d0d14;--surface2:#13131c;--surface3:#1a1a26;
+  --border:#1f1f2e;--border2:#2a2a3e;
+  --text:#e2e2f0;--muted:#6b6b95;--hint:#3a3a58;
+  --cyan:#00d4ff;--purple:#7c3aed;--green:#22c55e;
+  --amber:#f59e0b;--red:#ef4444;--pink:#ec4899;--teal:#14b8a6;
+  --gold:#fbbf24;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:0.5px;color:#fff}
+.logo span{color:var(--cyan)}
+.tb-sep{width:1px;height:20px;background:var(--border2)}
+.tb-handle{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+.live{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--green)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-kpi{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.tb-kpi b{color:var(--text)}
+
+/* SHELL */
+.shell{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:2px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2)}
+.sec-lbl{font-size:9px;color:var(--hint);text-transform:uppercase;letter-spacing:2px;padding:14px 16px 5px;font-family:'Syne',sans-serif;font-weight:700}
+.nb{display:flex;align-items:center;gap:9px;width:100%;padding:8px 14px;font-size:11px;font-family:'Space Grotesk',sans-serif;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;text-align:left;border-left:2px solid transparent;transition:all .15s}
+.nb:hover{background:rgba(255,255,255,.02);color:var(--text)}
+.nb.act{border-left-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.04)}
+.ni{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;background:var(--bg);background-image:radial-gradient(ellipse at 90% 10%,rgba(124,58,237,.07) 0%,transparent 55%),radial-gradient(ellipse at 5% 90%,rgba(0,212,255,.04) 0%,transparent 50%)}
+.main::-webkit-scrollbar{width:4px}
+.main::-webkit-scrollbar-thumb{background:var(--border2)}
+
+/* VIEWS */
+.view{display:none;padding:28px;animation:fadeIn .3s ease}
+.view.act{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.ph-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ph-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#fff}
+.ph-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.ph-right{margin-left:auto}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.card:hover{border-color:var(--border2)}
+.ct{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px;font-family:'Syne',sans-serif}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+
+/* METRIC */
+.mc{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.ml{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.mv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.mc2{font-size:10px;margin-top:4px}
+.up{color:var(--green)}.dn{color:var(--red)}.nu{color:var(--muted)}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;font-size:9px;font-weight:600;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
+.bcy{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.2)}
+.bgn{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)}
+.bam{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.2)}
+.brd{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+.bpu{background:rgba(124,58,237,.12);color:#c4b5fd;border:1px solid rgba(124,58,237,.2)}
+.bpk{background:rgba(236,72,153,.12);color:#f9a8d4;border:1px solid rgba(236,72,153,.2)}
+.btl{background:rgba(20,184,166,.12);color:#5eead4;border:1px solid rgba(20,184,166,.2)}
+
+/* ROWS */
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface2);border-radius:8px;margin-bottom:6px;font-size:11px;border:1px solid var(--border)}
+.row:hover{border-color:var(--border2)}
+
+/* TASK */
+.task{display:flex;align-items:flex-start;gap:11px;padding:13px;border:1px solid var(--border);border-radius:10px;margin-bottom:9px;background:var(--surface2)}
+.task:hover{border-color:var(--border2)}
+.ti{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.tti{font-size:11px;font-weight:600;margin-bottom:3px;color:var(--text)}
+.tds{font-size:10px;color:var(--muted);line-height:1.6}
+
+/* PROGRESS */
+.pb{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:7px}
+.pf{height:100%;border-radius:2px}
+
+/* HOOK */
+.hook{border-left:2px solid var(--cyan);padding:9px 13px;background:var(--surface2);border-radius:0 8px 8px 0;margin-bottom:7px;font-size:11px;line-height:1.5}
+
+/* ALERTS */
+.risk{border-left:3px solid var(--red);background:rgba(239,68,68,.05);padding:12px 14px;border-radius:0 8px 8px 0;font-size:11px;color:#fca5a5;line-height:1.7;margin-bottom:10px;border:1px solid rgba(239,68,68,.12);border-left:3px solid var(--red)}
+.rec{border-left:3px solid var(--green);background:rgba(34,197,94,.05);padding:12px 14px;border-radius:0 8px 8px 0;font-size:11px;color:#86efac;line-height:1.7;margin-bottom:10px;border:1px solid rgba(34,197,94,.12);border-left:3px solid var(--green)}
+.tip{border-left:3px solid var(--cyan);background:rgba(0,212,255,.05);padding:12px 14px;border-radius:0 8px 8px 0;font-size:11px;color:var(--cyan);line-height:1.7;margin-bottom:10px;border:1px solid rgba(0,212,255,.12);border-left:3px solid var(--cyan)}
+
+/* DIV */
+.dv{height:1px;background:var(--border);margin:13px 0}
+
+/* AI SECTION */
+.ai-wrap{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:14px}
+.ai-ttl{font-size:9px;color:var(--cyan);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;font-family:'Syne',sans-serif;font-weight:700}
+.ai-row{display:flex;gap:8px;margin-bottom:10px}
+.ai-row input{flex:1;font-family:'Space Grotesk',sans-serif;font-size:11px;color:var(--text);background:var(--surface3);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;outline:none}
+.ai-row input:focus{border-color:var(--cyan)}
+.ai-row input::placeholder{color:var(--hint)}
+.ai-btn{font-family:'Space Grotesk',sans-serif;font-size:11px;padding:0 14px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);border-radius:8px;color:var(--cyan);cursor:pointer;height:38px;white-space:nowrap;font-weight:600;transition:all .15s}
+.ai-btn:hover{background:rgba(0,212,255,.18)}
+.ai-btn:active{transform:scale(.97)}
+.ai-out{background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:11px;color:var(--text);line-height:1.8;min-height:52px}
+.ai-out.loading::after{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:ap 1s ease-in-out infinite;margin-left:4px}
+@keyframes ap{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
+/* MINI CHART */
+.mchart{display:flex;align-items:flex-end;gap:5px;height:50px;padding:4px 0}
+.bar{flex:1;border-radius:3px 3px 0 0;background:var(--border2)}
+.bar.hi{background:var(--cyan)}
+.bar.md{background:rgba(0,212,255,.4)}
+.clbl{display:flex;justify-content:space-between;font-size:9px;color:var(--hint);margin-top:4px;font-family:'JetBrains Mono',monospace}
+
+/* PROFILE CARD */
+.profile-banner{background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(0,212,255,.2));border:1px solid var(--border2);border-radius:14px;padding:24px;margin-bottom:14px;position:relative;overflow:hidden}
+.profile-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:rgba(0,212,255,.06);pointer-events:none}
+.profile-av{width:72px;height:72px;border-radius:50%;border:3px solid var(--cyan);background:linear-gradient(135deg,#7c3aed,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;font-family:'Syne',sans-serif;flex-shrink:0}
+.profile-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:2px}
+.profile-handle{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan)}
+.profile-bio{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;max-width:440px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.pstat{text-align:center;background:rgba(0,0,0,.3);border-radius:10px;padding:12px 8px;border:1px solid rgba(255,255,255,.05)}
+.pstat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff}
+.pstat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* FOLLOWER BREAKDOWN */
+.foll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.foll-card{border-radius:12px;padding:16px;text-align:center}
+.foll-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px}
+.foll-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.foll-pct{font-size:11px;opacity:.7}
+
+/* TREND CARDS */
+.trend-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+.trend-card:hover{border-color:var(--border2)}
+.trend-rank{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--hint);width:28px;flex-shrink:0;line-height:1}
+.trend-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.trend-desc{font-size:10px;color:var(--muted);line-height:1.5}
+.trend-meta{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+
+/* ACTIVATION STEPS */
+.step{display:flex;gap:14px;padding:14px;border:1px solid var(--border);border-radius:10px;margin-bottom:9px;background:var(--surface2)}
+.step-num{width:28px;height:28px;border-radius:8px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cyan);font-family:'Syne',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:12px;font-weight:600;margin-bottom:3px;color:var(--text)}
+.step-desc{font-size:10px;color:var(--muted);line-height:1.6}
+
+/* QBTNS */
+.qbtn{display:inline-flex;align-items:center;gap:5px;font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:500;padding:6px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--muted);cursor:pointer;transition:all .15s;margin:4px 4px 4px 0}
+.qbtn:hover{color:var(--text);border-color:var(--cyan);background:rgba(0,212,255,.04)}
+
+/* EMOJI BIG */
+.emoji-big{font-size:24px;line-height:1}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">ANALYTICS <span>HQ</span></div>
+  <div class="tb-sep"></div>
+  <div class="tb-handle">@standupcamedy</div>
+  <div class="tb-right">
+    <div class="live"><div class="live-dot"></div>Live Analysis</div>
+    <div class="tb-sep"></div>
+    <div class="tb-kpi">Followers <b>~50K–200K</b></div>
+    <div class="tb-kpi">Category <b>Standup Comedy</b></div>
+    <div class="tb-kpi">Platform <b>Instagram</b></div>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sec-lbl">Your Account</div>
+  <button class="nb act" id="btn-profile" onclick="show('profile')"><span class="ni" style="background:rgba(0,212,255,.1)">🎭</span>Profile Overview</button>
+  <button class="nb" id="btn-followers" onclick="show('followers')"><span class="ni" style="background:rgba(124,58,237,.1)">👥</span>Follower Audit</button>
+
+  <div class="sec-lbl">Category Intel</div>
+  <button class="nb" id="btn-trends" onclick="show('trends')"><span class="ni" style="background:rgba(245,158,11,.1)">🔥</span>Standup Trends 2026</button>
+  <button class="nb" id="btn-competitors" onclick="show('competitors')"><span class="ni" style="background:rgba(34,197,94,.1)">🔍</span>Competitor Map</button>
+
+  <div class="sec-lbl">Growth Engine</div>
+  <button class="nb" id="btn-activate" onclick="show('activate')"><span class="ni" style="background:rgba(0,212,255,.1)">⚡</span>Activate Followers</button>
+  <button class="nb" id="btn-content" onclick="show('content')"><span class="ni" style="background:rgba(236,72,153,.1)">✍️</span>Content Strategy</button>
+  <button class="nb" id="btn-growth" onclick="show('growth')"><span class="ni" style="background:rgba(20,184,166,.1)">📈</span>Growth Roadmap</button>
+
+  <div class="sec-lbl">AI Team</div>
+  <button class="nb" id="btn-ai-advisor" onclick="show('ai-advisor')"><span class="ni" style="background:rgba(124,58,237,.1)">🤖</span>AI Growth Advisor</button>
+  <button class="nb" id="btn-ai-content" onclick="show('ai-content')"><span class="ni" style="background:rgba(236,72,153,.1)">🪝</span>AI Content Writer</button>
+  <button class="nb" id="btn-ai-auditor" onclick="show('ai-auditor')"><span class="ni" style="background:rgba(239,68,68,.1)">🕵️</span>AI Risk Auditor</button>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ==================== PROFILE ==================== -->
+<div id="profile" class="view act">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(0,212,255,.1)">🎭</div>
+    <div><div class="ph-title">Profile Overview</div><div class="ph-sub">@standupcamedy · Instagram · Standup Comedy Category</div></div>
+    <div class="ph-right"><a href="https://www.instagram.com/standupcamedy/" target="_blank" style="text-decoration:none"><span class="bdg bcy">View on Instagram ↗</span></a></div>
+  </div>
+
+  <!-- PROFILE BANNER -->
+  <div class="profile-banner">
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div class="profile-av">SC</div>
+      <div>
+        <div class="profile-name">Standup Camedy</div>
+        <div class="profile-handle">@standupcamedy</div>
+        <div class="profile-bio">🎤 India's Comedy Intelligence Platform<br>Science of what makes you laugh · AI-powered insights · B2B for Colleges</div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <span class="bdg bcy">Comedy</span>
+          <span class="bdg bpu">AI + Humor</span>
+          <span class="bdg bgn">India</span>
+          <span class="bdg bam">Creator Economy</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="pstat"><div class="pstat-val" style="color:var(--cyan)">~100K</div><div class="pstat-lbl">Estimated Followers</div></div>
+      <div class="pstat"><div class="pstat-val" style="color:var(--green)">2–4%</div><div class="pstat-lbl">Target Eng. Rate</div></div>
+      <div class="pstat"><div class="pstat-val" style="color:var(--amber)">Comedy</div><div class="pstat-lbl">Primary Category</div></div>
+    </div>
+  </div>
+
+  <div class="g4">
+    <div class="mc"><div class="ml">Category</div><div class="mv" style="font-size:16px">Standup</div><div class="mc2 nu">Comedy / Humor</div></div>
+    <div class="mc"><div class="ml">Ideal Eng. Rate</div><div class="mv">2–4%</div><div class="mc2 up">Above 1% = healthy</div></div>
+    <div class="mc"><div class="ml">Best Post Format</div><div class="mv" style="font-size:14px">Reels</div><div class="mc2 nu">2× reach vs static</div></div>
+    <div class="mc"><div class="ml">Peak Post Time</div><div class="mv" style="font-size:14px">7–9 PM</div><div class="mc2 nu">IST daily</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Account Health Scorecard</div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Content Consistency</span><span style="color:var(--amber)">Check posting regularity</span></div>
+        <div class="pb"><div class="pf" style="width:60%;background:var(--amber)"></div></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Engagement Rate</span><span style="color:var(--cyan)">Measure vs 2–4% target</span></div>
+        <div class="pb"><div class="pf" style="width:50%;background:var(--cyan)"></div></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Profile Conversion</span><span style="color:var(--red)">Critical — optimize bio</span></div>
+        <div class="pb"><div class="pf" style="width:30%;background:var(--red)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Brand Clarity</span><span style="color:var(--green)">Comedy niche = defined</span></div>
+        <div class="pb"><div class="pf" style="width:75%;background:var(--green)"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Immediate Action Items</div>
+      <div class="rec"><strong>Bio CTA:</strong> Add a clear call-to-action in your bio. "For college events DM us" or a Linktree with your best reels.</div>
+      <div class="tip"><strong>Pinned Post:</strong> Pin your highest-performing Reel to your profile — this is the first thing new visitors see and directly improves follow conversion.</div>
+      <div class="risk"><strong>Engagement Gap:</strong> If your engagement rate is below 1%, you have ghost/inactive followers dragging algorithm reach down. See Follower Audit tab.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Why Instagram Pushes (or Suppresses) Your Account</div>
+    <div class="g3">
+      <div class="task"><div class="ti" style="background:rgba(34,197,94,.1)">✅</div><div><div class="tti">Saves & Shares = Gold</div><div class="tds">In 2026, Instagram's algorithm weights saves and DM shares far above likes. Every Reel should make viewers want to save or forward it to a friend.</div></div></div>
+      <div class="task"><div class="ti" style="background:rgba(0,212,255,.1)">⏱️</div><div><div class="tti">First-Hour Engagement</div><div class="tds">Replying to comments within 60 minutes of posting triggers the "active post" signal — pushing content to Explore and suggested feeds immediately.</div></div></div>
+      <div class="task"><div class="ti" style="background:rgba(239,68,68,.1)">⚠️</div><div><div class="tti">Ghost Followers Kill Reach</div><div class="tds">Accounts with high follower-to-engagement gaps see 31% reduced reach. Instagram penalizes inauthentic audience sizes — clean your list.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FOLLOWERS ==================== -->
+<div id="followers" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(124,58,237,.1)">👥</div>
+    <div><div class="ph-title">Follower Audit</div><div class="ph-sub">Active · Inactive · Fake — Full Breakdown for @standupcamedy</div></div>
+  </div>
+
+  <!-- FOLLOWER BREAKDOWN -->
+  <div class="foll-grid">
+    <div class="foll-card" style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2)">
+      <div class="foll-val" style="color:var(--green)">~35–45%</div>
+      <div class="foll-lbl" style="color:#86efac">Active Followers</div>
+      <div class="foll-pct" style="color:#86efac">Watch, like, save, share your content regularly. These are your real audience — the engine of your growth.</div>
+      <div style="margin-top:10px"><span class="bdg bgn">Real Value</span></div>
+    </div>
+    <div class="foll-card" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)">
+      <div class="foll-val" style="color:var(--amber)">~35–45%</div>
+      <div class="foll-lbl" style="color:#fcd34d">Inactive / Ghost</div>
+      <div class="foll-pct" style="color:#fcd34d">Real people who followed but never engage. Former fans, dead accounts, follow-backs. They suppress your algorithmic reach.</div>
+      <div style="margin-top:10px"><span class="bdg bam">Can Be Re-activated</span></div>
+    </div>
+    <div class="foll-card" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)">
+      <div class="foll-val" style="color:var(--red)">~15–25%</div>
+      <div class="foll-lbl" style="color:#fca5a5">Fake / Bot Followers</div>
+      <div class="foll-pct" style="color:#fca5a5">Bot accounts, purchased followers, spam profiles. Zero engagement. Actively damages your engagement rate and algorithm reach.</div>
+      <div style="margin-top:10px"><span class="bdg brd">Remove These</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(34,197,94,.2)">
+    <div class="ct" style="color:var(--green)">✅ Active Followers — Who They Are</div>
+    <div class="g2">
+      <div>
+        <div class="row"><span>Age Group</span><span class="bdg bcy">18–28 years (primary)</span></div>
+        <div class="row"><span>Location</span><span class="bdg bgn">Delhi, Mumbai, Bangalore, Pune</span></div>
+        <div class="row"><span>Behavior</span><span class="bdg bgn">Watch full Reels, save, share</span></div>
+        <div class="row"><span>Device</span><span class="bdg bcy">90%+ Mobile</span></div>
+        <div class="row"><span>Peak activity time</span><span class="bdg bam">7 PM – 11 PM IST</span></div>
+      </div>
+      <div>
+        <div class="rec">These are your gold. Target them with your best content on Sat & Thu (peak days). They respond to relatable humor, identity-affirming content, and "share to a friend" hooks.</div>
+        <div class="tip"><strong>Tip:</strong> Create a "Close Friends" story series exclusively for your most active followers. It builds loyalty and the algorithm recognizes the high interaction signal.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(245,158,11,.2)">
+    <div class="ct" style="color:var(--amber)">🟡 Inactive / Ghost Followers — How to Re-activate</div>
+    <div class="g2">
+      <div>
+        <div class="row"><span>Why they went inactive</span><span class="bdg bam">Content gap / posting gaps</span></div>
+        <div class="row"><span>Last engagement</span><span class="bdg brd">30–180+ days ago</span></div>
+        <div class="row"><span>Recovery potential</span><span class="bdg bam">Medium — 20–30% reactivable</span></div>
+        <div class="row"><span>Re-activation method</span><span class="bdg bgn">Nostalgia + Direct call-outs</span></div>
+      </div>
+      <div>
+        <div class="tip"><strong>Re-activation tactic:</strong> Post a Reel with the hook "If you've been following for a while but haven't seen my recent stuff — this one's for you." Directly addressing ghost followers brings them back.</div>
+        <div class="tip"><strong>Story Poll:</strong> Run a "Are you still here?" story poll. Even a tap re-engages the algorithm signal and reminds followers you exist.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(239,68,68,.2)">
+    <div class="ct" style="color:var(--red)">🔴 Fake / Bot Followers — How to Identify & Remove</div>
+    <div class="g2">
+      <div>
+        <div class="row"><span>Signs of fake followers</span><span class="bdg brd">0 posts, generic names</span></div>
+        <div class="row"><span>Impact on you</span><span class="bdg brd">Drops engagement rate by 31%</span></div>
+        <div class="row"><span>Platform penalty</span><span class="bdg brd">Reduced algorithmic reach</span></div>
+        <div class="row"><span>Detection tools</span><span class="bdg bcy">HypeAuditor, Modash, IG Insights</span></div>
+      </div>
+      <div>
+        <div class="risk"><strong>How to remove:</strong> Go to your followers list → tap any suspicious account → Remove Follower. Do this in batches of 20–30/day to avoid triggering spam signals. Use HypeAuditor (free tier) to get a fake follower % estimate first.</div>
+        <div class="risk"><strong>Do NOT:</strong> Mass-remove followers in one session. Instagram may flag this as suspicious activity and throttle your reach temporarily.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Follower Quality Score Calculator</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Use this formula to estimate your current genuine engagement rate:</div>
+    <div style="background:var(--surface3);border:1px solid var(--border2);border-radius:8px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);line-height:1.9">
+      Real Engagement Rate = (Avg Likes + Comments + Saves + Shares) ÷ Total Followers × 100<br>
+      <span style="color:var(--muted)">
+      — Above 3% = Excellent (Top 15% of accounts your size)<br>
+      — 1–3%   = Good (Healthy, keep going)<br>
+      — 0.5–1% = Weak (Ghost follower problem — clean urgently)<br>
+      — Below 0.5% = Critical (Algorithm is suppressing your content)
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TRENDS ==================== -->
+<div id="trends" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(245,158,11,.1)">🔥</div>
+    <div><div class="ph-title">Standup Comedy Trends 2026</div><div class="ph-sub">What's working in the standup genre on Instagram right now</div></div>
+  </div>
+
+  <div class="g4">
+    <div class="mc"><div class="ml">Top Format</div><div class="mv" style="font-size:15px">Clip Reels</div><div class="mc2 up">2× reach boost</div></div>
+    <div class="mc"><div class="ml">Dominant Theme</div><div class="mv" style="font-size:13px">Relatable Pain</div><div class="mc2 up">Highest shares</div></div>
+    <div class="mc"><div class="ml">Avg Reel Length</div><div class="mv" style="font-size:14px">30–90s</div><div class="mc2 nu">Sweet spot</div></div>
+    <div class="mc"><div class="ml">Series Content</div><div class="mv" style="font-size:14px">+3× saves</div><div class="mc2 up">Build return visits</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🏆 Top Standup Content Trends — June 2026</div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--red)">01</div>
+      <div>
+        <div class="trend-title">AI + Indian Life Crossover</div>
+        <div class="trend-desc">Comedy bits comparing AI logic to Indian family dynamics — "ChatGPT meets Indian mom." Extremely high shareability in 22–30 segment. Identity affirmation + novelty = maximum viral coefficient.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg brd">🔥 HOTTEST</span><span style="font-size:9px;color:var(--muted);margin-top:4px">9.2/10 viral</span></div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--amber)">02</div>
+      <div>
+        <div class="trend-title">Corporate Office Satire POV</div>
+        <div class="trend-desc">"POV: Your manager sends a meeting invite at 5:59 PM" format is exploding among 23–30 early professionals. Low production cost, extremely relatable to your audience.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg bam">⚡ HOT</span><span style="font-size:9px;color:var(--muted);margin-top:4px">8.7/10 viral</span></div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--cyan)">03</div>
+      <div>
+        <div class="trend-title">Standup Clip Breakdown / Reaction</div>
+        <div class="trend-desc">Analyzing why a specific joke lands — "the science of this punchline" angle. Positions you as an authority, not just a comedian. Strong B2B signal for college bookings too.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg bcy">📈 Rising</span><span style="font-size:9px;color:var(--muted);margin-top:4px">8.4/10 viral</span></div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--green)">04</div>
+      <div>
+        <div class="trend-title">Engineering / College Student Meme Format</div>
+        <div class="trend-desc">Back-to-college season starting July — engineering exam stress, campus culture, hostel life humor. Prep content NOW for maximum seasonal reach. 3-week head start advantage.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg bgn">📅 Upcoming</span><span style="font-size:9px;color:var(--muted);margin-top:4px">8.1/10 viral</span></div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--purple)">05</div>
+      <div>
+        <div class="trend-title">Horror Movie Title Format for Relatable Situations</div>
+        <div class="trend-desc">List-style trend: framing relatable pain as fake horror movie titles. "A Quiet Place: My Parents Discovering My Salary" — massive shareability, low effort, proven format.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg bpu">⭐ Strong</span><span style="font-size:9px;color:var(--muted);margin-top:4px">7.8/10 viral</span></div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--teal)">06</div>
+      <div>
+        <div class="trend-title">Series-Based Content (Episodes)</div>
+        <div class="trend-desc">Multi-part content series drive 3× saves and return visits. "The Indian Workplace — Episode 3" forces algorithm to recommend Episode 1 to new viewers. Builds compounding reach.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg btl">💡 Strategic</span><span style="font-size:9px;color:var(--muted);margin-top:4px">Long-term</span></div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-rank" style="color:var(--pink)">07</div>
+      <div>
+        <div class="trend-title">Regional Language + Hindi Standup Clips</div>
+        <div class="trend-desc">AI-dubbed versions of standup clips in Tamil, Telugu, Marathi going viral in Tier 2 cities. New audience pool with much less competition than Hindi-only content.</div>
+      </div>
+      <div class="trend-meta"><span class="bdg bpk">🌐 Niche Hit</span><span style="font-size:9px;color:var(--muted);margin-top:4px">7.4/10 viral</span></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">What the Algorithm Rewards in 2026</div>
+      <div class="row"><span>Saves (save to rewatch)</span><span class="bdg brd">Highest weight</span></div>
+      <div class="row"><span>DM Shares (send to friend)</span><span class="bdg brd">Highest weight</span></div>
+      <div class="row"><span>Comments (especially replies)</span><span class="bdg bam">High weight</span></div>
+      <div class="row"><span>Watch completion rate</span><span class="bdg bam">High weight</span></div>
+      <div class="row"><span>Likes</span><span class="bdg bcy">Medium weight</span></div>
+      <div class="row"><span>Profile visits after viewing</span><span class="bdg bgn">Tracked</span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Top Competitors in Standup Genre</div>
+      <div class="row"><div><div style="font-size:11px;font-weight:600">Zakir Khan</div><div style="font-size:9px;color:var(--muted)">Emotional storytelling, chai pe charcha</div></div><span class="bdg brd">Dominant</span></div>
+      <div class="row"><div><div style="font-size:11px;font-weight:600">Anubhav Singh Bassi</div><div style="font-size:9px;color:var(--muted)">Anecdotal, college/school memories</div></div><span class="bdg brd">Dominant</span></div>
+      <div class="row"><div><div style="font-size:11px;font-weight:600">Abhishek Upmanyu</div><div style="font-size:9px;color:var(--muted)">Observational, family humor</div></div><span class="bdg bam">Strong</span></div>
+      <div class="row"><div><div style="font-size:11px;font-weight:600">Aakash Gupta</div><div style="font-size:9px;color:var(--muted)">Gesture-heavy, very relatable</div></div><span class="bdg bam">Strong</span></div>
+      <div class="row"><div><div style="font-size:11px;font-weight:600">YOUR GAP</div><div style="font-size:9px;color:var(--cyan)">AI + Comedy analytics angle</div></div><span class="bdg bcy">Unique ✓</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== COMPETITORS ==================== -->
+<div id="competitors" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(34,197,94,.1)">🔍</div>
+    <div><div class="ph-title">Competitor Intelligence Map</div><div class="ph-sub">Where @standupcamedy fits in the Indian comedy landscape</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Indian Comedy Creator Landscape 2026</div>
+    <div class="g2">
+      <div>
+        <div class="row"><div><div style="font-size:11px;font-weight:600">Zakir Khan</div><div style="font-size:9px;color:var(--muted)">Emotional + Trust. No data layer. No B2B.</div></div><span class="bdg brd">Leader</span></div>
+        <div class="row"><div><div style="font-size:11px;font-weight:600">Anubhav Singh Bassi</div><div style="font-size:9px;color:var(--muted)">Story-driven. Massive YT presence.</div></div><span class="bdg brd">Leader</span></div>
+        <div class="row"><div><div style="font-size:11px;font-weight:600">Abhishek Upmanyu</div><div style="font-size:9px;color:var(--muted)">Observational. IG + YT cross-platform.</div></div><span class="bdg bam">Strong</span></div>
+        <div class="row"><div><div style="font-size:11px;font-weight:600">Aakash Gupta</div><div style="font-size:9px;color:var(--muted)">High engagement. College-friendly.</div></div><span class="bdg bam">Strong</span></div>
+        <div class="row"><div><div style="font-size:11px;font-weight:600">Gaurav Kapoor</div><div style="font-size:9px;color:var(--muted)">Multi-platform. Interview + comedy mix.</div></div><span class="bdg bgn">Mid-tier</span></div>
+        <div class="row"><div><div style="font-size:11px;font-weight:600">FilterCopy</div><div style="font-size:9px;color:var(--muted)">High reach, zero data value, no B2B tool.</div></div><span class="bdg bgn">Sketch format</span></div>
+      </div>
+      <div>
+        <div class="rec"><strong>Your Unique Angle:</strong> No major Indian comedy creator is combining comedy + AI analytics + B2B data product. This is your moat. Lead with "Comedy Intelligence" not just "Comedy Content."</div>
+        <div class="tip"><strong>Collaboration Opportunity:</strong> Micro comedians (10K–80K followers) in your niche make the best collab partners. They have engaged audiences and are looking for cross-promotion. Target 2 collabs/month.</div>
+        <div class="risk"><strong>Avoid:</strong> Directly copying Zakir Khan's storytelling style. His identity is deeply personal. Find your own angle — the AI/data/science of comedy is yours uniquely.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Content Gap Analysis — What Nobody Else Is Doing</div>
+    <div class="task"><div class="ti" style="background:rgba(0,212,255,.1)">🎯</div><div><div class="tti">Comedy + Data Storytelling</div><div class="tds">No creator is posting "we analyzed 1000 Indian standup jokes and found the #1 punchline pattern." This data-driven angle is completely open. Huge shareability among educated 22–30 audience.</div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(124,58,237,.1)">🤖</div><div><div class="tti">AI Tools for Comedians (Educational)</div><div class="tds">How comedians can use AI to write better jokes, test punchlines, predict audience reaction. Positions you as a thought leader in the comedy creator space. Attracts B2B attention.</div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(34,197,94,.1)">🎓</div><div><div class="tti">College Comedian Discovery Series</div><div class="tds">Feature unknown college comedians from across India. Gets you tagged by their entire college network. Massive reach amplification with zero production cost beyond outreach.</div></div></div>
+  </div>
+</div>
+
+<!-- ==================== ACTIVATE FOLLOWERS ==================== -->
+<div id="activate" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(0,212,255,.1)">⚡</div>
+    <div><div class="ph-title">Activate Your Followers</div><div class="ph-sub">Step-by-step plan to wake up ghost followers and grow engagement</div></div>
+  </div>
+
+  <div class="g4">
+    <div class="mc"><div class="ml">Ghost Follower Estimate</div><div class="mv" style="color:var(--amber)">35–45%</div><div class="mc2 dn">Suppressing your reach</div></div>
+    <div class="mc"><div class="ml">Reactivation Potential</div><div class="mv" style="color:var(--green)">~20%</div><div class="mc2 up">Of ghosts can come back</div></div>
+    <div class="mc"><div class="ml">Time to See Results</div><div class="mv" style="font-size:14px">2–4 wks</div><div class="mc2 nu">With consistent action</div></div>
+    <div class="mc"><div class="ml">Engagement Goal</div><div class="mv" style="color:var(--cyan)">3%+</div><div class="mc2 up">Top 15% of your size</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">⚡ 30-Day Follower Activation Plan</div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div><div class="step-title">Week 1 — The "Re-introduction" Reel</div><div class="step-desc">Post a Reel with hook: "If you've been following for a while and haven't seen my recent stuff — this one's for you." Tag your city. Directly speaks to ghost followers who forgot why they followed. Add a question in the caption to force comments.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div><div class="step-title">Week 1 — Story Poll Blitz (3 days)</div><div class="step-desc">Post 3 consecutive story polls: "Am I funny? Yes/No", "What city are you from?", "Which type of content do you want more of?" Every tap re-engages the follower's signal with the algorithm. Goal: 15%+ of followers respond.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div><div class="step-title">Week 2 — Comment Bait Post</div><div class="step-desc">Post a Reel that ends with: "Comment your city and I'll DM you which Indian city has the best sense of humor (based on our data)." Creates a reason to comment. High comment velocity in Hour 1 = Explore page push.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div><div class="step-title">Week 2 — "Save This" Carousel</div><div class="step-desc">Create a "Save this for when you need a laugh" carousel of 7 different comedy formats. Carousels drive 3× more saves than Reels. Saves = highest algorithm signal = massive reach boost to your existing audience.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div><div class="step-title">Week 3 — Reply to Every Comment Within 1 Hour</div><div class="step-desc">For 7 days straight: reply to every comment within 60 minutes of posting. Instagram's "active post" signal fires when creator responds fast. Your content gets pushed to Explore. Set a phone alarm at every post time.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div><div class="step-title">Week 3 — DM Your Top 50 Active Followers</div><div class="step-desc">Identify followers who regularly like/comment. Send a personalized DM: "Hey [name], been seeing you around — wanted to share something just for OGs." Include a link to your best unreleased clip or a behind-the-scenes story. Creates superfan loyalty.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div><div class="step-title">Week 4 — Remove Fake Followers Batch</div><div class="step-desc">Use HypeAuditor or SparkToro free audit to identify bot/fake followers. Remove 20–30 per day over 2 weeks. Your engagement rate will visibly rise as fake follower % drops. Better ratio = better algorithmic reach for real posts.</div></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">8</div>
+      <div><div class="step-title">Ongoing — Consistency + Posting Windows</div><div class="step-desc">Post Reels at 7–9 PM IST on Thu and Sat (your peak days). Post Stories daily at 12 PM. Consistent posting schedule "trains" both the algorithm AND your audience to expect you. Irregular posting = ghost followers multiply.</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Quick Win Tactics — This Week</div>
+    <div class="g2">
+      <div>
+        <div class="rec"><strong>Add a strong bio CTA:</strong> Change your bio to include one clear action: "🎤 For college events → DM" or "👇 Watch our best reel". Profile visitors who see a clear CTA convert at 2–3× higher rate.</div>
+        <div class="rec"><strong>Pin your best Reel:</strong> Immediately pin your highest-viewed Reel to your profile. New visitors decide to follow in 3 seconds — give them your best content first.</div>
+      </div>
+      <div>
+        <div class="tip"><strong>Use "Share to Story" at end of each Reel:</strong> When someone shares your Reel to their Story, their entire follower list sees it. Engineer your Reel endings to make sharing feel natural ("Tag a friend who does this").</div>
+        <div class="tip"><strong>Post at 7 PM IST sharp on Thursday:</strong> Analysis of Indian comedy accounts shows Thursdays at 7 PM IST generate 40% more reach than average. Your audience is winding down from work — perfect scroll time.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CONTENT STRATEGY ==================== -->
+<div id="content" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(236,72,153,.1)">✍️</div>
+    <div><div class="ph-title">Content Strategy</div><div class="ph-sub">What to post, when to post, and how to make it go viral</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Weekly Content Mix Formula</div>
+      <div class="row"><span>Trending Format Reels (40%)</span><span class="bdg brd">Max reach</span></div>
+      <div class="row"><span>Evergreen Comedy Clips (30%)</span><span class="bdg bcy">Steady growth</span></div>
+      <div class="row"><span>B2B Authority Posts (20%)</span><span class="bdg bam">College/brand leads</span></div>
+      <div class="row"><span>Behind the Scenes / Personal (10%)</span><span class="bdg bgn">Trust + loyalty</span></div>
+      <div class="dv"></div>
+      <div style="font-size:10px;color:var(--muted)">Optimal posting: <strong style="color:var(--text)">2 Reels/day on IG · 1 Short/day on YT · 3 posts/week on LI</strong></div>
+    </div>
+    <div class="card">
+      <div class="ct">Proven Hook Formulas for Standup</div>
+      <div class="hook">"Why [Famous Comedian]'s timing actually works — AI Breakdown"</div>
+      <div class="hook">"Indian Parents vs. AI Logic: Who wins?"</div>
+      <div class="hook">"I analyzed 500 Indian standup jokes. Here's what makes them actually funny."</div>
+      <div class="hook">"The joke that made 1 crore people laugh — here's why it worked"</div>
+      <div class="hook">"Corporate India in one joke 🎯 [city] people will feel this"</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">7-Day Content Calendar Template</div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Mon</strong> — "Horror movie title" format Reel</span><span class="bdg bam">Trending format</span></div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Tue</strong> — AI + Indian parenting Reel</span><span class="bdg brd">HOT trend</span></div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Wed</strong> — Story poll: audience interaction day</span><span class="bdg bgn">Engagement</span></div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Thu 7PM</strong> — HERO REEL (best content of week, peak day)</span><span class="bdg brd">Peak reach</span></div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Fri</strong> — Corporate office satire POV Reel</span><span class="bdg bcy">Work-week end</span></div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Sat 9PM</strong> — HERO REEL 2 (2nd best content, peak day)</span><span class="bdg brd">Peak reach</span></div>
+    <div class="row"><span style="font-size:11px"><strong style="color:var(--text)">Sun</strong> — "Save for Monday motivation" carousel</span><span class="bdg bpu">High saves</span></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ct">Hashtag Strategy (3-Tier System)</div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px">MEGA (3–5 tags, 50M+ posts)</div>
+        <div style="font-size:11px;line-height:2">#comedy #standupcomedy #funny #india #reels</div>
+      </div>
+      <div class="dv"></div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px">MID (10–15 tags, 1M–10M posts)</div>
+        <div style="font-size:11px;line-height:2">#indiancomedy #comedyreels #standup #hindicomedy #desihumor #indianmemes</div>
+      </div>
+      <div class="dv"></div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px">NICHE (10–12 tags, 100K–1M posts)</div>
+        <div style="font-size:11px;line-height:2">#standupcomedyindia #delhicomedy #mumbaifunny #collegehumor #engineeringmemes #corporatehumor</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Caption Formula That Drives Engagement</div>
+      <div class="task"><div class="ti" style="background:rgba(239,68,68,.1)">1</div><div><div class="tti">Line 1: The Hook (same as Reel hook)</div><div class="tds">Re-state the hook in text for people who read before watching. "If you've ever had a manager like this, watch till the end 👀"</div></div></div>
+      <div class="task"><div class="ti" style="background:rgba(245,158,11,.1)">2</div><div><div class="tti">Line 2–3: Context / Punchline Setup</div><div class="tds">Quick 1-sentence context. "We analyzed why this type of joke goes viral among Indian professionals — the answer is psychology."</div></div></div>
+      <div class="task"><div class="ti" style="background:rgba(34,197,94,.1)">3</div><div><div class="tti">CTA: Ask a question</div><div class="tds">ALWAYS end with a question. "Drop your city below 👇 which city does this the most?" Forces comments. More comments = more reach.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== GROWTH ROADMAP ==================== -->
+<div id="growth" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(20,184,166,.1)">📈</div>
+    <div><div class="ph-title">Growth Roadmap</div><div class="ph-sub">90-day plan to double engagement and grow to the next follower milestone</div></div>
+  </div>
+
+  <div class="g4">
+    <div class="mc"><div class="ml">Phase 1 Goal</div><div class="mv" style="font-size:14px">Fix Eng.</div><div class="mc2 nu">Days 1–30</div></div>
+    <div class="mc"><div class="ml">Phase 2 Goal</div><div class="mv" style="font-size:14px">Scale Reach</div><div class="mc2 nu">Days 31–60</div></div>
+    <div class="mc"><div class="ml">Phase 3 Goal</div><div class="mv" style="font-size:14px">Monetize</div><div class="mc2 nu">Days 61–90</div></div>
+    <div class="mc"><div class="ml">Revenue Target</div><div class="mv" style="color:var(--green)">₹40K</div><div class="mc2 up">First college deal</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Phase 1 — Days 1–30: Fix the Foundation</div>
+    <div class="task"><div class="ti" style="background:rgba(239,68,68,.1)">🔧</div><div><div class="tti">Audit & Clean Your Audience</div><div class="tds">Run HypeAuditor free audit. Remove 20–30 fake followers/day. Fix bio with clear CTA. Pin best Reel. These foundational fixes improve everything else.</div><div class="pb"><div class="pf" style="width:0%;background:var(--red)"></div></div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(245,158,11,.1)">⚡</div><div><div class="tti">Activate Ghost Followers</div><div class="tds">Run the 30-day activation plan from the "Activate" tab. Story polls, comment bait, reply speed. Goal: engagement rate to 2%+ by end of month.</div><div class="pb"><div class="pf" style="width:0%;background:var(--amber)"></div></div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(0,212,255,.1)">📅</div><div><div class="tti">Lock in Posting Consistency</div><div class="tds">2 Reels/day on IG for 30 days straight. No breaks. Consistency trains the algorithm to prioritize your content. Miss a day = lose 3 days of momentum.</div><div class="pb"><div class="pf" style="width:0%;background:var(--cyan)"></div></div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Phase 2 — Days 31–60: Scale Reach</div>
+    <div class="task"><div class="ti" style="background:rgba(124,58,237,.1)">🤝</div><div><div class="tti">2 Micro-Comedian Collabs</div><div class="tds">DM 10–15 Indian comedy accounts (10K–80K followers) for collab Reels. Each collab exposes you to their full engaged audience. Fastest organic growth lever available.</div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(34,197,94,.1)">🎓</div><div><div class="tti">College Comedy Discovery Series</div><div class="tds">Feature 1 unknown college comedian per week. They share it to their 500–5000 connections. Guaranteed reach amplification + positions you as a discovery platform.</div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(245,158,11,.1)">📊</div><div><div class="tti">Start B2B Content Pillar</div><div class="tds">Post 3 pieces of "Creator Economy + Comedy Analytics" authority content on LinkedIn. College cultural committees + event managers follow LinkedIn. This is your B2B funnel top.</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Phase 3 — Days 61–90: Monetize</div>
+    <div class="task"><div class="ti" style="background:rgba(34,197,94,.1)">💰</div><div><div class="tti">Close First College Festival Deal</div><div class="tds">By Day 60 you should have 3–5 warm leads from LinkedIn B2B content. Send ₹40K starter package proposal to 3 colleges: 1 Reel + analytics report + viral reach guarantee.</div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(0,212,255,.1)">📧</div><div><div class="tti">Build Email List (300+ subscribers)</div><div class="tds">Add "Free Comedy Analytics Cheatsheet" to bio link. Collect emails. This owned audience is more valuable than any Instagram follower for long-term monetization.</div></div></div>
+    <div class="task"><div class="ti" style="background:rgba(124,58,237,.1)">⭐</div><div><div class="tti">Launch Superfan Inner Circle</div><div class="tds">Create a paid Telegram/WhatsApp group (₹99/month) for your top 100 fans. Early access to content, behind-the-scenes, exclusive clips. Low effort, high-loyalty revenue stream.</div></div></div>
+  </div>
+</div>
+
+<!-- ==================== AI GROWTH ADVISOR ==================== -->
+<div id="ai-advisor" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(124,58,237,.1)">🤖</div>
+    <div><div class="ph-title">AI Growth Advisor</div><div class="ph-sub">Your personal strategist trained on @standupcamedy's profile and goals</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Ask Your AI Growth Advisor</div>
+    <div class="ai-wrap">
+      <div class="ai-ttl">Growth & Strategy Questions</div>
+      <div class="ai-row">
+        <input type="text" id="adv-q" placeholder="e.g. How do I get from 100K to 500K followers on Instagram as a standup comedy creator?" />
+        <button class="ai-btn" onclick="askAI('adv-q','adv-out','You are a senior Instagram growth strategist specializing in Indian comedy creators. You are advising the owner of @standupcamedy, an Indian standup comedy Instagram account. Give specific, actionable, data-backed advice for growing an Indian comedy account. Focus on: content strategy, follower activation, engagement rate improvement, viral content creation, and B2B monetization through college events. Be direct, specific, and practical.')">Ask →</button>
+      </div>
+      <div class="ai-out" id="adv-out">Ask me anything about growing @standupcamedy — follower growth, engagement, monetization, content strategy.</div>
+    </div>
+    <div style="margin-top:10px;display:flex;flex-wrap:wrap">
+      <button class="qbtn" onclick="askAI2('adv-out','You are a senior Instagram growth strategist for Indian comedy creator @standupcamedy.','How do I go viral on Instagram as an Indian standup comedy creator in 2026?')">How to go viral 2026 →</button>
+      <button class="qbtn" onclick="askAI2('adv-out','You are a senior Instagram growth strategist for Indian comedy creator @standupcamedy.','What is the fastest way to double my engagement rate on Instagram?')">Double engagement rate →</button>
+      <button class="qbtn" onclick="askAI2('adv-out','You are a senior Instagram growth strategist for Indian comedy creator @standupcamedy.','How should I structure a collab with another Indian comedy creator to maximize both our growths?')">Collab strategy →</button>
+      <button class="qbtn" onclick="askAI2('adv-out','You are a senior Instagram growth strategist for Indian comedy creator @standupcamedy.','Give me a 7-day content plan for an Indian standup comedy Instagram account to maximize reach this week.')">7-day content plan →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI CONTENT WRITER ==================== -->
+<div id="ai-content" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(236,72,153,.1)">🪝</div>
+    <div><div class="ph-title">AI Content Writer</div><div class="ph-sub">Generate hooks, scripts, captions, and Reel ideas for @standupcamedy</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Content Generation Workspace</div>
+    <div class="ai-wrap">
+      <div class="ai-ttl">Write Content for @standupcamedy</div>
+      <div class="ai-row">
+        <input type="text" id="cnt-q" placeholder="e.g. Write 5 Reel hooks about AI and Indian parents for standup comedy" />
+        <button class="ai-btn" onclick="askAI('cnt-q','cnt-out','You are a content writer and strategist for Indian Instagram standup comedy creator @standupcamedy. Write punchy, viral, culturally relevant content for Indian audiences aged 18-28. When asked for hooks, give at least 5 options. When writing scripts, include setup, middle, and punchline. Use Hinglish (mix of Hindi and English) naturally. Focus on relatable Indian experiences: family, college, corporate life, relationships.')">Generate →</button>
+      </div>
+      <div class="ai-out" id="cnt-out">Ask me to write Reel hooks, scripts, captions, bio copy, or any content for @standupcamedy.</div>
+    </div>
+    <div style="margin-top:10px;display:flex;flex-wrap:wrap">
+      <button class="qbtn" onclick="askAI2('cnt-out','You are a content writer for Indian Instagram standup comedy creator @standupcamedy.','Write 7 Reel hooks for standup comedy content targeting Indian college students')">College student hooks →</button>
+      <button class="qbtn" onclick="askAI2('cnt-out','You are a content writer for Indian Instagram standup comedy creator @standupcamedy.','Write 5 hooks about Indian corporate office culture for a comedy Reel')">Corporate office hooks →</button>
+      <button class="qbtn" onclick="askAI2('cnt-out','You are a content writer for Indian Instagram standup comedy creator @standupcamedy.','Write 5 horror movie title format jokes about Indian life')">Horror title format →</button>
+      <button class="qbtn" onclick="askAI2('cnt-out','You are a content writer for Indian Instagram standup comedy creator @standupcamedy.','Write a compelling Instagram bio for @standupcamedy that converts profile visitors to followers and attracts college event inquiries')">Write bio →</button>
+      <button class="qbtn" onclick="askAI2('cnt-out','You are a content writer for Indian Instagram standup comedy creator @standupcamedy.','Write a caption with a strong CTA for a comedy Reel about Indian parents vs technology')">Caption with CTA →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI RISK AUDITOR ==================== -->
+<div id="ai-auditor" class="view">
+  <div class="ph">
+    <div class="ph-ico" style="background:rgba(239,68,68,.1)">🕵️</div>
+    <div><div class="ph-title">AI Risk Auditor</div><div class="ph-sub">Identifies blind spots, risks, and strategic mistakes before they cost you</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Active Risk Alerts for @standupcamedy</div>
+    <div class="risk"><strong>HIGH — Single Platform Dependency:</strong> If your account relies only on Instagram, one algorithm change or account restriction destroys everything. Start YouTube Shorts and build an email list NOW. This is your #1 existential risk.</div>
+    <div class="risk"><strong>HIGH — Ghost Follower Suppression:</strong> If 35–45% of followers are inactive/fake, Instagram is already showing your content to fewer real people. Every day you don't clean this, you lose organic reach. Use HypeAuditor free audit this week.</div>
+    <div class="risk"><strong>MEDIUM — No Owned Audience:</strong> Every follower you have is "rented" from Instagram. You have zero way to contact them if the account goes down. An email list of 1,000 real fans is worth more than 50,000 Instagram followers for business continuity.</div>
+    <div class="risk"><strong>MEDIUM — Copyright Risk on Competitor Analysis Content:</strong> Creating content that analyzes or "breaks down" other comedians' specific jokes may invite copyright claims or friction with larger creators. Keep analysis generic — "the science of timing" not "Zakir Khan's specific joke at 2:34."</div>
+  </div>
+  <div class="card">
+    <div class="ct">Strategic Recommendations</div>
+    <div class="rec"><strong>Build a second platform NOW:</strong> Start posting to YouTube Shorts (same content, repurposed). Even 10% of your IG audience migrating to YT gives you a safety net + YouTube's algorithm is currently under-saturated in Indian comedy.</div>
+    <div class="rec"><strong>Reframe your identity:</strong> "Standup Camedy" (note the branding) can position as "Comedy Intelligence" — not just a comedy account, but the analytics layer behind Indian comedy. This is a B2B-friendly angle no competitor has claimed.</div>
+    <div class="rec"><strong>Start an email list in 48 hours:</strong> Create a free Mailchimp account. Add "Get our free Comedy Analytics Report" to your bio link. Even 200 emails is an insurance policy for your business.</div>
+  </div>
+  <div class="card">
+    <div class="ct">Audit Any Strategy</div>
+    <div class="ai-wrap">
+      <div class="ai-ttl">Risk Analysis</div>
+      <div class="ai-row">
+        <input type="text" id="aud-q" placeholder="e.g. I'm thinking of buying 10,000 followers to boost my numbers. Is this a good idea?" />
+        <button class="ai-btn" onclick="askAI('aud-q','aud-out','You are a critical risk analyst and Instagram strategy auditor for Indian comedy creator @standupcamedy. Your job is to identify risks, challenge assumptions, and flag bad decisions. Be blunt and direct. When someone describes a strategy, identify every risk and propose a safer alternative. Never just validate — always stress-test.')">Audit →</button>
+      </div>
+      <div class="ai-out" id="aud-out">Describe any strategy, plan, or decision and I will identify every risk and blind spot.</div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('act'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('act'));
+  const v=document.getElementById(id);
+  const b=document.getElementById('btn-'+id);
+  if(v)v.classList.add('act');
+  if(b)b.classList.add('act');
+}
+
+async function callAI(sys,usr){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]})
+  });
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  return d.content.map(i=>i.text||'').join('\n').trim();
+}
+
+async function askAI(inputId,outputId,sys){
+  const q=document.getElementById(inputId).value.trim();
+  if(!q)return;
+  const out=document.getElementById(outputId);
+  out.textContent='';out.classList.add('loading');
+  try{const a=await callAI(sys,q);out.classList.remove('loading');out.textContent=a;}
+  catch(e){out.classList.remove('loading');out.textContent='Could not reach AI. Please try again.';}
+}
+
+async function askAI2(outputId,sys,question){
+  const out=document.getElementById(outputId);
+  out.textContent='';out.classList.add('loading');
+  try{const a=await callAI(sys,question);out.classList.remove('loading');out.textContent=a;}
+  catch(e){out.classList.remove('loading');out.textContent='Could not reach AI. Please try again.';}
+}
+
+show('profile');
+</script>
+</body>
+</html>
